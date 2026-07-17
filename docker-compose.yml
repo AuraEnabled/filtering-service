@@ -1,0 +1,25 @@
+services:
+  producer:
+    build:
+      context: .
+      dockerfile: producer/Dockerfile
+    ports:
+      - '50051:50051'
+    networks:
+      - grpc-net
+
+  consumer:
+    build:
+      context: .
+      dockerfile: consumer/Dockerfile
+    depends_on:
+      - producer
+    environment:
+      - PRODUCER_GRPC_URL=producer:50051
+    restart: 'no'
+    networks:
+      - grpc-net
+
+networks:
+  grpc-net:
+    driver: bridge
